@@ -13,6 +13,7 @@ public class CreateCategoryProfile : Profile
     /// </summary>
     public CreateCategoryProfile()
     {
+        CreateMap<Category, Category>();
         CreateMap<CreateCategoryCommand, Category>();
         CreateMap<Category, CreateCategoryResult>();
     }

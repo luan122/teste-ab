@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ambev.DeveloperEvaluation.Application.Categories.GetCategory;
 
@@ -42,7 +43,7 @@ public class GetCategoryHandler : IRequestHandler<GetCategoryCommand, GetCategor
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
-        var category = await _categoryRepository.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
+        var category = await _categoryRepository.Database.FirstOrDefaultAsync(fd => fd.Id == request.Id, cancellationToken: cancellationToken);
         return category == null
             ? throw new KeyNotFoundException($"Category with ID {request.Id} not found")
             : _mapper.Map<GetCategoryResult>(category);

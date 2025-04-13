@@ -4,6 +4,7 @@ using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Common.Security;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ambev.DeveloperEvaluation.Application.Categories.CreateCategory;
 
@@ -41,13 +42,14 @@ public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Crea
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
-        var existingCategory = await _categoryRepository.GetByTitleAsync(command.Title, cancellationToken);
+        var existingCategory = await _categoryRepository.Database.FirstOrDefaultAsync(fd => fd.Title == command.Title, cancellationToken);
         if (existingCategory != null)
             throw new InvalidOperationException($"Category with title {command.Title} already exists");
 
         var category = _mapper.Map<Category>(command);
 
-        var createdCategory = await _categoryRepository.CreateAsync(category, cancellationToken);
+        var createdCategory = await _categoryRepository.AddAsync(category, cancellationToken);
+        await _categoryRepository.SaveChangesAsync();
         var result = _mapper.Map<CreateCategoryResult>(createdCategory);
         return result;
     }

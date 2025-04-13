@@ -1,5 +1,4 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Enums;
-using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using FluentValidation;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories.CreateCategory
