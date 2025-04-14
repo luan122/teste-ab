@@ -5,10 +5,20 @@ using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
+using Ambev.DeveloperEvaluation.WebApi.Common.Filter;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
+using AutoMapper.EquivalencyExpression;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
+using System.Text.Json;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
 
@@ -27,7 +37,34 @@ public class Program
             builder.Services.AddEndpointsApiExplorer();
 
             builder.AddBasicHealthChecks();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+                {
+                    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                    var comments = new XPathDocument(xmlPath);
+                    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+                    c.EnableAnnotations();
+                    c.MapType<FilterRequest>(() => new OpenApiSchema
+                    {
+                        Type = "object",
+                        Example = new OpenApiString(
+                            JsonSerializer.Serialize
+                        (
+                            new
+                            {
+                                _page = 1,
+                                _size = 10,
+                                _order = "price desc, title asc",
+                                title = "beer",
+                                _minPrice = 10,
+                                _maxPrice = 1000,
+                                _minDate = DateTime.Now.AddDays(-10).ToString("yyyy-MM-dd"),
+                                _maxDate = DateTime.Now.ToString("yyyy-MM-dd")
+                            }, new JsonSerializerOptions() { WriteIndented = true })
+                            )
+                    });
+
+                });
 
             builder.Services.AddDbContext<DefaultContext>(options =>
                 options.UseNpgsql(
@@ -40,7 +77,11 @@ public class Program
 
             builder.RegisterDependencies();
 
-            builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationLayer).Assembly);
+            builder.Services.AddAutoMapper(cfg => {
+                cfg.AddCollectionMappers();
+                cfg.AllowNullCollections = true;
+                cfg.AllowNullDestinationValues = true;
+            }, [typeof(Program).Assembly, typeof(ApplicationLayer).Assembly]);
 
             builder.Services.AddMediatR(cfg =>
             {
