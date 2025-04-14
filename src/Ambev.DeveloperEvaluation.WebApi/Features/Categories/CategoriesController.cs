@@ -1,8 +1,8 @@
-﻿using AgileObjects.ReadableExpressions;
-using Ambev.DeveloperEvaluation.Application.Categories.CreateCategory;
+﻿using Ambev.DeveloperEvaluation.Application.Categories.CreateCategory;
 using Ambev.DeveloperEvaluation.Application.Categories.DeleteCategory;
 using Ambev.DeveloperEvaluation.Application.Categories.GetCategory;
 using Ambev.DeveloperEvaluation.Application.Categories.ListCategory;
+using Ambev.DeveloperEvaluation.Application.Categories.UpdateCategory;
 using Ambev.DeveloperEvaluation.Application.Common.Commands;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Common.Filter;
@@ -11,16 +11,16 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Categories.CreateCategory;
 using Ambev.DeveloperEvaluation.WebApi.Features.Categories.DeleteCategory;
 using Ambev.DeveloperEvaluation.WebApi.Features.Categories.GetCategory;
 using Ambev.DeveloperEvaluation.WebApi.Features.Categories.ListCategory;
-using Ambev.DeveloperEvaluation.WebApi.Features.Users.GetUser;
+using Ambev.DeveloperEvaluation.WebApi.Features.Categories.UpdateCategory;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
 {
+    /// <summary>
+    /// Controller for managing categories operations
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : BaseController
@@ -28,6 +28,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Initializes a new instance of CategoriesController
+        /// </summary>
+        /// <param name="mediator">The mediator instance</param>
+        /// <param name="mapper">The AutoMapper instance</param>
         public CategoriesController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
@@ -38,8 +43,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
         /// </summary>
         /// <param name="filters">Filters sent on query string<br/>
         /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns>Success response if the category was deleted</returns>
+        /// <returns>Success response if the category was found using filters criteria</returns>
         [HttpGet]
+        [ProducesResponseType(typeof(PaginatedResponse<GetCategoryResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCategories([FromQuery] FilterRequest filters, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<ListCategoryCommand>(_mapper.Map<FilterCommandRequest>(filters));
@@ -47,6 +53,13 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
             var result = _mapper.Map<PaginatedList<ListCategoryResponse>>(response);
             return OkPaginated(result, "Categories retrieved successfully");
         }
+
+        /// <summary>
+        /// Retrieves a category by their ID
+        /// </summary>
+        /// <param name="id">The unique identifier of the category</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The category details if found</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponseWithData<GetCategoryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -61,6 +74,13 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
             var response = await _mediator.Send(command, cancellationToken);
             return Ok(_mapper.Map<GetCategoryResponse>(response), "Category retrieved successfully");
         }
+
+        /// <summary>
+        /// Creates a new category
+        /// </summary>
+        /// <param name="request">The category creation request</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The created category details</returns>
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponseWithData<CreateCategoryResponse>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -82,6 +102,29 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
                 Data = _mapper.Map<CreateCategoryResponse>(response)
             });
         }
+
+        /// <summary>
+        /// Update a category by their ID
+        /// </summary>
+        /// <param name="id">The unique identifier of the category to update</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Success response if the category was deleted</returns>
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ApiResponseWithData<UpdateCategoryResponse>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutCategory([FromRoute] Guid id, [FromBody]UpdateCategoryRequest request, CancellationToken cancellationToken = default)
+        {
+            var validator = new UpdateCategoryRequestValidator();
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+
+            var command = _mapper.Map<UpdateCategoryCommand>(request, opt => opt.AfterMap((src, dest) => dest.Id = id));
+            var response = await _mediator.Send(command, cancellationToken);
+            return Ok(_mapper.Map<UpdateCategoryResponse>(response), "Category updated successfully");
+        }
+
         /// <summary>
         /// Deletes a category by their ID
         /// </summary>
