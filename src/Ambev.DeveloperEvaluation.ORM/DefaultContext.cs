@@ -4,6 +4,8 @@ using Ambev.DeveloperEvaluation.Domain.Entities.Aggregates;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using SharpCompress.Common;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Ambev.DeveloperEvaluation.ORM;
@@ -22,6 +24,24 @@ public class DefaultContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
+        var deletedPropertyName = "IsDeleted";
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            var parameter = Expression.Parameter(entity.ClrType, "e");
+            if (entity.ClrType.IsSubclassOf(typeof(BaseWithAuditEntity)))
+            {
+                var prop = entity.ClrType.GetProperty(deletedPropertyName);
+                if (prop != null)
+                {
+                    var expBody = Expression.Equal(
+                        Expression.Call(typeof(EF), nameof(EF.Property), [prop.PropertyType], parameter, Expression.Constant(deletedPropertyName)),
+                        Expression.Constant(false)
+                        );
+                    var exp = Expression.Lambda(expBody, parameter);
+                    modelBuilder.Entity(entity.ClrType).HasQueryFilter(exp);
+                }
+            }
+        }
     }
 
     public override int SaveChanges()

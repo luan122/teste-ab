@@ -20,7 +20,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Repositories
         TEntity Update(TEntity obj);
 
         IList<TEntity> BulkUpdate(IList<TEntity> objs);
-        Task DeleteById<T>(T id, CancellationToken cancellationToken = default);
+        Task<TEntity?> DeleteById<T>(T id, CancellationToken cancellationToken = default);
         void ClearTracked();
 
         int SaveChanges();

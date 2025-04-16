@@ -48,10 +48,12 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             Database.UpdateRange(objs);
             return objs;
         }
-        public virtual async Task DeleteById<T>(T id, CancellationToken cancellationToken = default)
+        public virtual async Task<TEntity?> DeleteById<T>(T id, CancellationToken cancellationToken = default)
         {
-            var currentEntity = await Database.FindAsync(id, cancellationToken);
+            var currentEntity = await Database.FindAsync([id], cancellationToken);
+            if (currentEntity == null) return currentEntity;
             Database.Remove(currentEntity);
+            return currentEntity;
         }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
