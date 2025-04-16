@@ -11,7 +11,7 @@ namespace Ambev.DeveloperEvaluation.Common.Extensions
     {
         public static string Sanitize(string input)
         {
-            var sanitized = SanitizeRegexes.NonAlphaNumeric().Replace(input, string.Empty);
+            var sanitized = SanitizeRegexes.CharactersNotPermitedOnFileName().Replace(input, "_");
             sanitized = SanitizeRegexes.MultipleSpaces().Replace(sanitized, string.Empty).Trim();
             return SanitizeRegexes.Space().Replace(sanitized, "_");
         }

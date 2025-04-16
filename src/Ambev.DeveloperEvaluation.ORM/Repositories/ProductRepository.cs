@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using SharpCompress.Common;
@@ -21,10 +22,25 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
 
         }
 
-        public async Task<bool> UpdateProductCategory(Product currentEntity, Product updatedEntity, CancellationToken cancellationToken = default)
+        public async Task<ProductUpdateCategoryOperation> UpdateProductCategory(Product currentEntity, Product updatedEntity, CancellationToken cancellationToken = default)
         {
             var category = await Context.Categories.AsNoTracking().FirstOrDefaultAsync(fd => fd.Title == updatedEntity.Category.Title, cancellationToken: cancellationToken);
-            return category != null && currentEntity.CategoryId == category.Id;
+            if (category == null)
+            {
+                await Context.Categories.AddAsync(updatedEntity.Category, cancellationToken);
+                currentEntity.Category = updatedEntity.Category;
+                currentEntity.CategoryId = updatedEntity.CategoryId;
+                return ProductUpdateCategoryOperation.Add;
+
+            }
+            else if (category != null && currentEntity.CategoryId == category.Id)
+                return ProductUpdateCategoryOperation.Keep;
+            else
+            {
+                currentEntity.Category = category;
+                currentEntity.CategoryId = category.Id;
+                return ProductUpdateCategoryOperation.Update;
+            }
         }
 
         public async Task DeleteImage(Guid id, CancellationToken cancellationToken = default)

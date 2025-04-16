@@ -34,9 +34,5 @@ public class CategoryConfiguration: IEntityTypeConfiguration<Category>
         builder.Property(o => o.IsDeleted)
             .HasDefaultValue(false);
 
-        builder.HasMany(o => o.Products)
-            .WithOne(o => o.Category)
-            .HasForeignKey(o => o.CategoryId);
-
     }
 }

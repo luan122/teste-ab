@@ -7,6 +7,8 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Products.CreateProduct;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Ambev.DeveloperEvaluation.Application.Products.UpdateProduct;
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
 {
@@ -59,5 +61,28 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
             });
         }
 
+        /// <summary>
+        /// Update a product by their ID
+        /// </summary>
+        /// <param name="id">The unique identifier of the product to update</param>
+        /// <param name="request">The product update request</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Success response if the product was deleted</returns>
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ApiResponseWithData<UpdateProductResponse>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutProduct([FromRoute] Guid id, [FromForm] UpdateProductRequest request, CancellationToken cancellationToken = default)
+        {
+            var validator = new UpdateProductRequestValidator();
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+
+            var command = _mapper.Map<UpdateProductCommand>(request, opt => opt.AfterMap((src, dest) => dest.Id = id));
+            var response = await _mediator.Send(command, cancellationToken);
+            var dataResponse = _mapper.Map<UpdateProductResponse>(response);
+            return Ok(dataResponse, "Product updated successfully");
+        }
     }
 }
