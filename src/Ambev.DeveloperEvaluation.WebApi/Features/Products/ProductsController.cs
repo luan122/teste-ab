@@ -11,6 +11,8 @@ using Ambev.DeveloperEvaluation.Application.Products.UpdateProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.UpdateProduct;
 using Ambev.DeveloperEvaluation.Application.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.DeleteProduct;
+using Ambev.DeveloperEvaluation.Application.Products.GetProduct;
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProduct;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
 {
@@ -114,6 +116,29 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
                 Success = true,
                 Message = "Product deleted successfully"
             });
+        }
+
+
+        /// <summary>
+        /// Retrieve a product by their ID
+        /// </summary>
+        /// <param name="id">The unique identifier of the product</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The product details if found</returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ApiResponseWithData<GetProductResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetProduct(Guid id, CancellationToken cancellationToken = default)
+        {
+            var request = new GetProductRequest { Id = id };
+            var validator = new GetProductRequestValidator();
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+            var command = _mapper.Map<GetProductCommand>(request);
+            var response = await _mediator.Send(command, cancellationToken);
+            var dataResponse = _mapper.Map<GetProductResponse>(response);
+            return Ok(dataResponse, "Product retrieved successfully");
         }
     }
 }
