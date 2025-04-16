@@ -15,7 +15,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
     /// Represents a category entity in the system.
     /// Includes information such as title, creation date, update date, and deletion status.
     /// </summary>
-    public class Category : BaseEntity
+    public class Category : BaseEntity, ICloneable
     {
         /// <summary>
         /// Gets or sets the title of the category.
@@ -45,6 +45,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
             CreatedAt = DateTime.UtcNow;
         }
+        public virtual List<Product> Products { get; set; }
         /// <summary>
         /// Performs validation of the category entity using the CategoryValidator rules.
         /// </summary>
@@ -66,6 +67,10 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
                 IsValid = result.IsValid,
                 Errors = result.Errors.Select(o => (ValidationErrorDetail)o)
             };
+        }
+        public object Clone()
+        {
+            return base.MemberwiseClone();
         }
     }
 }

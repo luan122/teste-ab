@@ -10,9 +10,12 @@ using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using AutoMapper.EquivalencyExpression;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+using MongoDB.EntityFrameworkCore.Infrastructure;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
@@ -72,6 +75,14 @@ public class Program
                     b => b.MigrationsAssembly("Ambev.DeveloperEvaluation.ORM")
                 )
             );
+
+            builder.Services.AddDbContext<NoSQLContext>(options =>
+            {
+                var connection = new MongoUrl(builder.Configuration.GetConnectionString("MongoDb"));
+                var settings = MongoClientSettings.FromUrl(connection);
+                var client = new MongoClient(settings);
+                options.UseMongoDB(client, connection.DatabaseName);
+            });
 
             builder.Services.AddJwtAuthentication(builder.Configuration);
 

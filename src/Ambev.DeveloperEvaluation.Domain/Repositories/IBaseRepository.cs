@@ -17,13 +17,10 @@ namespace Ambev.DeveloperEvaluation.Domain.Repositories
 
         Task<IList<TEntity>> BulkAddAsync(IList<TEntity> objs, CancellationToken cancellationToken = default);
 
-        Task<IList<TEntity>> FindAsync<T>(Expression<Func<TEntity, bool>> predicate, bool track = false, CancellationToken cancellationToken = default);
-        Task<TEntity?> FindOneAsync<T>(Expression<Func<TEntity, bool>> predicate, bool track = false, CancellationToken cancellationToken = default);
-
         TEntity Update(TEntity obj);
 
         IList<TEntity> BulkUpdate(IList<TEntity> objs);
-
+        Task DeleteById<T>(T id, CancellationToken cancellationToken = default);
         void ClearTracked();
 
         int SaveChanges();
