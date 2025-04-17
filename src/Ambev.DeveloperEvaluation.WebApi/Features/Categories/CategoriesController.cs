@@ -14,6 +14,7 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Categories.ListCategory;
 using Ambev.DeveloperEvaluation.WebApi.Features.Categories.UpdateCategory;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
@@ -23,6 +24,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriesController : BaseController
     {
         private readonly IMediator _mediator;
