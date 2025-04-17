@@ -39,5 +39,10 @@
         /// The list of items in the order
         /// </summary>
         public virtual List<GetOrderItemResponse> Items { get; set; } = []!;
+
+        /// <summary>
+        /// Tells if the order is or is not canceled
+        /// </summary>
+        public bool IsCanceled { get; set; }
     }
 }
