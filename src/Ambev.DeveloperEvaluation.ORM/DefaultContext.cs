@@ -15,6 +15,9 @@ public class DefaultContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Produts { get; set; }
+    public DbSet<Branch> Branches { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     public DefaultContext(DbContextOptions<DefaultContext> options) : base(options)
     {
@@ -28,7 +31,7 @@ public class DefaultContext : DbContext
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
             var parameter = Expression.Parameter(entity.ClrType, "e");
-            if (entity.ClrType.IsSubclassOf(typeof(BaseWithAuditEntity)))
+            if (entity.ClrType.IsSubclassOf(typeof(BaseWithAuditEntity)) || entity.ClrType.IsSubclassOf(typeof(IBaseWithCreatedAtEntity)))
             {
                 var prop = entity.ClrType.GetProperty(deletedPropertyName);
                 if (prop != null)
@@ -40,6 +43,19 @@ public class DefaultContext : DbContext
                     var exp = Expression.Lambda(expBody, parameter);
                     modelBuilder.Entity(entity.ClrType).HasQueryFilter(exp);
                 }
+                modelBuilder.Entity(entity.ClrType).Property("CreatedAt")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                modelBuilder.Entity(entity.ClrType).Property("IsDeleted")
+                    .HasDefaultValue(false);
+            }
+            if (entity.ClrType.IsSubclassOf(typeof(BaseEntity)))
+            {
+                modelBuilder.Entity(entity.ClrType).HasKey("Id");
+
+                modelBuilder.Entity(entity.ClrType).Property("Id")
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("gen_random_uuid()");
             }
         }
     }

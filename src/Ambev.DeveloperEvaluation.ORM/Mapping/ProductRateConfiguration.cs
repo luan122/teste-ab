@@ -10,9 +10,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
         public void Configure(EntityTypeBuilder<ProductRate> builder)
         {
             builder.ToTable("Products_Rates");
-            builder.HasKey(pr => pr.Id);
-            builder.Property(pr => pr.Id).HasColumnType("uuid").HasDefaultValueSql("gen_random_uuid()");
-            builder.Property(p => p.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             builder.Property(pr => pr.Rate).IsRequired();
             builder.HasOne(pr => pr.Product)
                 .WithOne(p => p.Rating)

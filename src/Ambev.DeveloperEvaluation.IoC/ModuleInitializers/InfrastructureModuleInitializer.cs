@@ -20,5 +20,6 @@ public class InfrastructureModuleInitializer : IModuleInitializer
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<INoSqlRepository<BsonDocumentBackedClass>, NoSqlRepository<BsonDocumentBackedClass, NoSQLContext>>();
+        builder.Services.AddScoped<IOrderRepository, OrderRepository>();
     }
 }
