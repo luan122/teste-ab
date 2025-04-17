@@ -25,26 +25,24 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// <summary>
         /// Gets or sets the date and time when the category was created.
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow!;
 
         /// <summary>
         /// Gets or sets the date and time when the category was last updated.
         /// Null if the category has not been updated.
         /// </summary>
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets a value indicating whether the category is marked as deleted.
         /// </summary>
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false!;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Category"/> class.
+        /// Gets or sets the collection of products associated with this category.
         /// </summary>
-        public Category()
-        {
-            CreatedAt = DateTime.UtcNow;
-        }
+        public virtual List<Product> Products { get; set; }
+
         /// <summary>
         /// Performs validation of the category entity using the CategoryValidator rules.
         /// </summary>

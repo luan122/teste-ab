@@ -2,10 +2,10 @@ using AutoMapper;
 using MediatR;
 using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
-using Ambev.DeveloperEvaluation.Application.Common.Commands;
 using Microsoft.EntityFrameworkCore;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Application.Common.Extensions;
+using Ambev.DeveloperEvaluation.Application.Common.Results;
 
 namespace Ambev.DeveloperEvaluation.Application.Categories.ListCategory;
 

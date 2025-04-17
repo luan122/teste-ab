@@ -1,0 +1,8 @@
+services:
+  ambev.developerevaluation.database:
+    volumes:
+    - ${APPDATA}/Ambev.DeveloperEvaluation/postgres-data:/var/lib/postgresql/data:rw
+
+  ambev.developerevaluation.nosql:
+    volumes:
+    - ${APPDATA}/Ambev.DeveloperEvaluation/mongo-data:/data/db:rw

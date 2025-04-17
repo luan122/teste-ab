@@ -27,7 +27,7 @@ services:
       POSTGRES_USER: developer
       POSTGRES_PASSWORD: ev@luAt10n
     ports:
-      - "5432"
+      - "5432:5432"
     restart: unless-stopped
 
   ambev.developerevaluation.nosql:
@@ -36,8 +36,9 @@ services:
     environment:
         MONGO_INITDB_ROOT_USERNAME: developer
         MONGO_INITDB_ROOT_PASSWORD: ev@luAt10n
+        MONGO_INITDB_DATABASE: developer_evaluation
     ports:
-      - "27017"
+      - "27017:27017"
 
   ambev.developerevaluation.cache:
     container_name: ambev_developer_evaluation_cache 

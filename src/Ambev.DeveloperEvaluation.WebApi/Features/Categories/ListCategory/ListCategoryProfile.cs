@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Application.Categories.ListCategory;
+using Ambev.DeveloperEvaluation.Application.Common.Commands;
 using AutoMapper;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories.ListCategory;
@@ -14,5 +15,7 @@ public class ListCategoryProfile : Profile
     public ListCategoryProfile()
     {
         CreateMap<ListCategoryResult, ListCategoryResponse>();
+
+        CreateMap<FilterCommandRequest, ListCategoryCommand>();
     }
 }

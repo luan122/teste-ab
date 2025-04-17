@@ -12,7 +12,7 @@ using System.IO;
 
 namespace Ambev.DeveloperEvaluation.ORM.Repositories
 {
-    public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity>, IDisposable, IAsyncDisposable
+    public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity>
         where TEntity : class
         where TContext : DbContext
     {
@@ -37,20 +37,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             return objs;
         }
 
-        public virtual async Task<IList<TEntity>> FindAsync<T>(Expression<Func<TEntity, bool>> predicate, bool track = false, CancellationToken cancellationToken = default)
-        {
-            return track ?
-                await Database.Where(predicate).ToListAsync(cancellationToken) :
-                await Database.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
-        }
-
-        public virtual async Task<TEntity?> FindOneAsync<T>(Expression<Func<TEntity, bool>> predicate, bool track = false, CancellationToken cancellationToken = default)
-        {
-            return track ?
-                await Database.FirstOrDefaultAsync(predicate, cancellationToken) :
-                await Database.FirstOrDefaultAsync(predicate, cancellationToken);
-        }
-
         public virtual TEntity Update(TEntity obj)
         {
             Database.Update(obj);
@@ -62,7 +48,13 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             Database.UpdateRange(objs);
             return objs;
         }
-
+        public virtual async Task<TEntity?> DeleteById<T>(T id, CancellationToken cancellationToken = default)
+        {
+            var currentEntity = await Database.FindAsync([id], cancellationToken);
+            if (currentEntity == null) return currentEntity;
+            Database.Remove(currentEntity);
+            return currentEntity;
+        }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return await Context.SaveChangesAsync(cancellationToken);

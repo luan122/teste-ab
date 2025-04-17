@@ -41,7 +41,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
         /// <summary>
         /// Get a paged list of categorys
         /// </summary>
-        /// <param name="filters">Filters sent on query string<br/>
+        /// <param name="filters">Filters sent on query string</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Success response if the category was found using filters criteria</returns>
         [HttpGet]

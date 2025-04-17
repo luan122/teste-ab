@@ -8,6 +8,4 @@ namespace Ambev.DeveloperEvaluation.Domain.Repositories;
 /// </summary>
 public interface ICategoryRepository : IBaseRepository<Category>
 {
-
-    Task<bool> SoftDeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }
