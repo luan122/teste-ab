@@ -1,6 +1,8 @@
 using MediatR;
 using FluentValidation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Ambev.DeveloperEvaluation.ORM.Repositories;
 
 namespace Ambev.DeveloperEvaluation.Application.Categories.DeleteCategory;
 
@@ -36,7 +38,8 @@ public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, Dele
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
-        var success = await _categoryRepository.SoftDeleteAsync(request.Id, cancellationToken);
+        await _categoryRepository.DeleteById(request.Id, cancellationToken);
+        var success = (await _categoryRepository.SaveChangesAsync(cancellationToken)) > 0;
         if (!success)
             throw new KeyNotFoundException($"Category with ID {request.Id} not found");
 

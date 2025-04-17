@@ -17,6 +17,7 @@ using System.Collections.Specialized;
 using Microsoft.VisualBasic;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using Ambev.DeveloperEvaluation.Application.Common.Results;
 
 namespace Ambev.DeveloperEvaluation.Application.Common.Extensions
 {

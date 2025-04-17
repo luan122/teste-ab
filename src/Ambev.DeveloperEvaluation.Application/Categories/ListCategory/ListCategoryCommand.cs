@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Application.Common.Commands;
+using Ambev.DeveloperEvaluation.Application.Common.Results;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using MediatR;
 

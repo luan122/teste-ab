@@ -1,5 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Images.GetImage;
 using Ambev.DeveloperEvaluation.WebApi.Common;
+using Ambev.DeveloperEvaluation.WebApi.Features.Categories.GetCategory;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,17 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Images
             _mediator = mediator;
             _mapper = mapper;
         }
-
+        /// <summary>
+        /// Retrieves an image file by its name.
+        /// </summary>
+        /// <param name="imageName">The name of the image file to retrieve.</param>
+        /// <param name="cancellationToken">A token to cancel the operation if needed.</param>
+        /// <returns>
+        /// The file content result with the appropriate content type if found;
+        /// Otherwise, returns a 404 Not Found response.
+        /// </returns>
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpGet("{imageName}")]
         public async Task<IActionResult> GetImage(string imageName, CancellationToken cancellationToken)
         {

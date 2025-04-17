@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Application.Common.Commands;
+﻿using Ambev.DeveloperEvaluation.Application.Common.Results;
 using Ambev.DeveloperEvaluation.Application.Common.TypeConverters;
 using AutoMapper;
 using System;

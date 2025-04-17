@@ -13,6 +13,8 @@ using Ambev.DeveloperEvaluation.Application.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.DeleteProduct;
 using Ambev.DeveloperEvaluation.Application.Products.GetProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProduct;
+using Ambev.DeveloperEvaluation.Application.Products.ListProduct;
+using Ambev.DeveloperEvaluation.WebApi.Features.Products.ListProduct;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
 {
@@ -139,6 +141,22 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
             var response = await _mediator.Send(command, cancellationToken);
             var dataResponse = _mapper.Map<GetProductResponse>(response);
             return Ok(dataResponse, "Product retrieved successfully");
+        }
+
+        /// <summary>
+        /// Retrieve a paged list of products
+        /// </summary>
+        /// <param name="filters">Filters sent on query string<br/></param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Success response if the product was found using filters criteria</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(PaginatedResponse<GetProductResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetProducts([FromQuery] FilterRequest filters, CancellationToken cancellationToken)
+        {
+            var command = _mapper.Map<ListProductCommand>(_mapper.Map<FilterCommandRequest>(filters));
+            var response = await _mediator.Send(command, cancellationToken);
+            var dataResponse = _mapper.Map<PaginatedList<ListProductResponse>>(response);
+            return OkPaginated(dataResponse, "Products retrieved successfully");
         }
     }
 }

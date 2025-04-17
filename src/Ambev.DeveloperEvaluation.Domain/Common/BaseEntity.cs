@@ -2,7 +2,7 @@
 
 namespace Ambev.DeveloperEvaluation.Domain.Common;
 
-public class BaseEntity : IComparable<BaseEntity>
+public class BaseEntity : IComparable<BaseEntity>, ICloneable
 {
     public Guid Id { get; set; }
 
@@ -19,5 +19,10 @@ public class BaseEntity : IComparable<BaseEntity>
         }
 
         return other!.Id.CompareTo(Id);
+    }
+
+    public object Clone()
+    {
+        return base.MemberwiseClone();
     }
 }

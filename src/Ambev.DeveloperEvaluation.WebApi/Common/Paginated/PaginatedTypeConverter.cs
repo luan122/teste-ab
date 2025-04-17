@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Application.Common.Commands;
+﻿using Ambev.DeveloperEvaluation.Application.Common.Results;
 using AutoMapper;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Common.Paginated
