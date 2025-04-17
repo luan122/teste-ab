@@ -25,5 +25,9 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
             return Items.Sum(s => s.GetITotalPriceWithDiscount());
         }
+        public void Cancel()
+        {
+            IsCanceled = true;
+        }
     }
 }
