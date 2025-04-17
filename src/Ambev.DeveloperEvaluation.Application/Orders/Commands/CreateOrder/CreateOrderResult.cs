@@ -1,6 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Users.GetUser;
 
-namespace Ambev.DeveloperEvaluation.Application.Orders.CreateOrder;
+namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CreateOrder;
 
 /// <summary>
 /// Represents the response returned after successfully creating a new order.

@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Application.Orders.CreateOrder;
+﻿using Ambev.DeveloperEvaluation.Application.Orders.Commands.CreateOrder;
+using Ambev.DeveloperEvaluation.Application.Orders.Notifications.CreateOrder;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Orders.CreateOrder;
 using AutoMapper;
@@ -48,8 +49,10 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders
 
             var command = _mapper.Map<CreateOrderCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
-            var dataResponse = _mapper.Map<CreateOrder.CreateOrderResponse>(response);
-            return base.Created(string.Empty, new ApiResponseWithData<CreateOrder.CreateOrderResponse>
+            var dataResponse = _mapper.Map<CreateOrderResponse>(response);
+            var notificationRequest = _mapper.Map<CreateOrderResponse, CreateOrderNotification>(dataResponse, opt => opt.AfterMap((src, dest) => dest.OrderId = src.Id));
+            await _mediator.Publish(notificationRequest, cancellationToken);
+            return base.Created(string.Empty, new ApiResponseWithData<CreateOrderResponse>
             {
                 Success = true,
                 Message = "Order created successfully",

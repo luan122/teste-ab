@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Application.Orders.CreateOrder;
+﻿using Ambev.DeveloperEvaluation.Application.Orders.Commands.CreateOrder;
+using Ambev.DeveloperEvaluation.Application.Orders.Notifications.CreateOrder;
 using AutoMapper;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders.CreateOrder
@@ -9,6 +10,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders.CreateOrder
         {
             CreateMap<CreateOrderRequest, CreateOrderCommand>();
             CreateMap<CreateOrderResult, CreateOrderResponse>();
+
+            CreateMap<CreateOrderResponse, CreateOrderNotification>();
 
             CreateMap<CreateOrderItemRequest, CreateOrderItemCommand>();
             CreateMap<CreateOrderItemResult, CreateOrderItemResponse>();

@@ -1,7 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Common.Validation;
 using MediatR;
 
-namespace Ambev.DeveloperEvaluation.Application.Orders.CreateOrder;
+namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CreateOrder;
 
 /// <summary>
 /// Command for creating a new order.

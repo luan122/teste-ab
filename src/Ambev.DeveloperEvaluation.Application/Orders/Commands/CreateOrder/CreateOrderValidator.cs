@@ -3,7 +3,7 @@ using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Validation;
 using FluentValidation;
 
-namespace Ambev.DeveloperEvaluation.Application.Orders.CreateOrder;
+namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CreateOrder;
 
 /// <summary>
 /// Validator for CreateOrderCommand that defines validation rules for order creation command.

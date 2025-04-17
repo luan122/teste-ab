@@ -12,7 +12,7 @@ using MongoDB.Bson.Serialization;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Services;
 
-namespace Ambev.DeveloperEvaluation.Application.Orders.CreateOrder;
+namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CreateOrder;
 
 /// <summary>
 /// Handler for processing CreateOrderCommand requests
@@ -56,7 +56,8 @@ public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, CreateOrde
         var saveResult = await _orderRepository.SaveChangesAsync(cancellationToken);
         if(saveResult < 1)
             throw new InvalidOperationException("Error while saving order");
-        order = await _orderRepository.Database.AsNoTracking().Include(o => o.Customer).Include(o => o.Items).ThenInclude(i => i.Product).Include(o => o.Branch).FirstAsync(f => f.Id == order.Id);
+        order = await _orderRepository.Database.AsNoTracking().Include(o => o.Customer).Include(o => o.Items).ThenInclude(i => i.Product).Include(o => o.Branch).FirstAsync(f => f.Id == order.Id, cancellationToken);
+
         var dataResult = _mapper.Map<CreateOrderResult>(order);
         return dataResult;
     }

@@ -1,4 +1,4 @@
-﻿namespace Ambev.DeveloperEvaluation.Application.Orders.CreateOrder
+﻿namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CreateOrder
 {
     public class CreateOrderBranchResult
     {
