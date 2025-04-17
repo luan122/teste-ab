@@ -42,7 +42,7 @@ public class User : BaseEntity, IUser
     /// Gets the user's role in the system.
     /// Determines the user's permissions and access levels.
     /// </summary>
-    public UserRole Role { get;     set; }
+    public UserRole Role { get; set; }
 
     /// <summary>
     /// Gets the user's current status.
@@ -77,6 +77,8 @@ public class User : BaseEntity, IUser
     /// </summary>
     /// <returns>The user's role as a string.</returns>
     string IUser.Role => Role.ToString();
+
+    public virtual List<Order> Orders { get; set; } = []!;
 
     /// <summary>
     /// Initializes a new instance of the User class.

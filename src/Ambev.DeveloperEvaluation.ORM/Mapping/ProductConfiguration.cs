@@ -12,14 +12,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
         builder.ToTable("Products");
 
-        builder.HasKey(p => p.Id);
-        builder.Property(p => p.Id).HasColumnType("uuid").HasDefaultValueSql("gen_random_uuid()");
-
-        builder.Property(p => p.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         builder.Property(p => p.Description).IsRequired();
         builder.Property(p => p.Price).IsRequired();
         builder.Property(p => p.Title).IsRequired();
-        builder.Property(p => p.IsDeleted).HasDefaultValue(false);
         builder.Property(p => p.IsActive).HasDefaultValue(true);
 
         builder.HasIndex(o => o.Price, "IX_Products_Price_Ascending");
