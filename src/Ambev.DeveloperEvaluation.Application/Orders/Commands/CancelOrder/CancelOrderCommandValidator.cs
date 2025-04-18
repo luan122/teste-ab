@@ -22,6 +22,11 @@ namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CancelOrder
                 .WithMessage("Can not provide both parameters, must be Int or Guid")
                 .Must(BeValidIntOrderNumberWhenIdIsNotSet)
                 .WithMessage("Id must be a valid Int or Guid value, if Int need to be greater than 0");
+
+            RuleFor(x => x.UserId)
+                .NotEmpty()
+                .WithMessage("Fail to identify the user")
+                .WithName("Authentication");
         }
         private static bool BothSet<T>(CancelOrderCommand obj, T _)
         {

@@ -41,7 +41,7 @@
         public virtual List<GetOrderItemResponse> Items { get; set; } = []!;
 
         /// <summary>
-        /// Tells if the order is or is not canceled
+        /// Flag to indicate if the order has been canceled
         /// </summary>
         public bool IsCanceled { get; set; }
     }

@@ -22,20 +22,22 @@ namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CancelOrder
         }
         public async Task<CancelOrderResult> Handle(CancelOrderCommand command, CancellationToken cancellationToken)
         {
-            var query = _orderRepository.Database;
-            var order = new Order();
+            var query = _orderRepository.Database.AsQueryable();
+            if (!command.UserBypass)
+                query = query.Where(w => w.CustomerId == command.UserId);
+            Order? order = null;
 
             if (command.Id != Guid.Empty)
-                order = await query.FirstOrDefaultAsync(o => o.Id == command.Id, cancellationToken);
+                order = await query.FirstOrDefaultAsync(o => o.Id == command.Id && !o.IsCanceled, cancellationToken);
             else if (command.OrderNumber > 0)
-                order = await query.FirstOrDefaultAsync(o => o.OrderNumber == command.OrderNumber, cancellationToken);
+                order = await query.FirstOrDefaultAsync(o => o.OrderNumber == command.OrderNumber && !o.IsCanceled, cancellationToken);
 
             if (order == null)
-                throw new KeyNotFoundException($"Order with ID {command.Id} not found.");
+                throw new KeyNotFoundException($"Order with ID {command.Id} not found or is already canceled.");
 
             order.Cancel();
             var result = (await _orderRepository.SaveChangesAsync(cancellationToken)) > 0;
-            return new CancelOrderResult() { Success = result, Message = result ? "Order cancelled successfully" : "Failed to cancel order" };
+            return new CancelOrderResult() { Success = result, Message = result ? "Order cancelled successfully" : "Failed to cancel order", OrderId = order.Id };
         }
     }
 }

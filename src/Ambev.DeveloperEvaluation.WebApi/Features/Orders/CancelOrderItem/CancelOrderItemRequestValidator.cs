@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 
-namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders.CancelOrder
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders.CancelOrderItem
 {
-    public class CancelOrderRequestValidator : AbstractValidator<CancelOrderRequest>
+    public class CancelOrderItemRequestValidator : AbstractValidator<CancelOrderItemRequest>
     {
-        public CancelOrderRequestValidator()
+        public CancelOrderItemRequestValidator()
         {
-            RuleFor(x => x.Id)
+            RuleFor(x => x.OrderId)
                 .Must(BothSet)
                 .WithMessage("Can not provide both parameters, must be Int or Guid")
                 .Must(BeAValidGuidIdWhenOrderNumberIsNotSet)
@@ -18,26 +18,30 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders.CancelOrder
                 .Must(BeValidIntOrderNumberWhenIdIsNotSet)
                 .WithMessage("Id must be a valid Int or Guid value, if Int need to be greater than 0");
 
+            RuleFor(x => x.OrderItemId)
+                .NotEmpty()
+                .WithMessage("OrderId is required");
+
             RuleFor(x => x.UserId)
                 .NotEmpty()
                 .WithMessage("Fail to identify the user")
                 .WithName("Authentication");
         }
-        private static bool BothSet<T>(CancelOrderRequest obj, T _)
+        private static bool BothSet<T>(CancelOrderItemRequest obj, T _)
         {
-            if (obj.Id != Guid.Empty && obj.OrderNumber > 0)
+            if (obj.OrderId != Guid.Empty && obj.OrderNumber > 0)
                 return false;
             return true;
         }
-        private static bool BeAValidGuidIdWhenOrderNumberIsNotSet(CancelOrderRequest obj, Guid id)
+        private static bool BeAValidGuidIdWhenOrderNumberIsNotSet(CancelOrderItemRequest obj, Guid id)
         {
             if (id == Guid.Empty && obj.OrderNumber <= 0)
                 return false;
             return true;
         }
-        private static bool BeValidIntOrderNumberWhenIdIsNotSet(CancelOrderRequest obj, int orderNumber)
+        private static bool BeValidIntOrderNumberWhenIdIsNotSet(CancelOrderItemRequest obj, int orderNumber)
         {
-            if (orderNumber <= 0 && obj.Id == Guid.Empty)
+            if (orderNumber <= 0 && obj.OrderId == Guid.Empty)
                 return false;
             return true;
         }

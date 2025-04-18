@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CancelOrder
+namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CancelOrderItem
 {
     /// <summary>
     /// Represents the response returned after attempting to cancel an order.
@@ -13,7 +13,7 @@ namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CancelOrder
     /// This response contains the operation result and a descriptive message about the outcome,
     /// which can be used to determine if the cancellation was successful.
     /// </remarks>
-    public class CancelOrderResult
+    public class CancelOrderItemResult
     {
         /// <summary>
         /// Gets or sets a value indicating whether the order cancellation operation was successful.
@@ -28,8 +28,8 @@ namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.CancelOrder
         public string Message { get; set; } = string.Empty;
 
         /// <summary>
-        /// The unique identifier of the canceled order
+        /// The unique identifier of the canceled order item
         /// </summary>
-        public Guid OrderId { get; set; }
+        public Guid OrderItemId { get; set; }
     }
 }

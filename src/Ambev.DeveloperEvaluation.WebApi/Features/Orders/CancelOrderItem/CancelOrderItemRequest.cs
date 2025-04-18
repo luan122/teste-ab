@@ -1,19 +1,24 @@
-﻿namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders.CancelOrder
+﻿namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders.CancelOrderItem
 {
     /// <summary>
-    /// Request model for getting a order by ID
+    /// Request model for cancel a order item by ID
     /// </summary>
-    public class CancelOrderRequest
+    public class CancelOrderItemRequest
     {
         /// <summary>
-        /// The unique identifier of the order to retrieve
+        /// The unique identifier of the order
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid OrderId { get; set; }
         /// <summary>
-        /// The order number of the order to retrieve
+        /// The order number of the order
         /// </summary>
         public int OrderNumber { get; set; }
 
+        /// <summary>
+        /// The unique identifier of the order item to cancel
+        /// </summary>
+        public Guid OrderItemId { get; set; }
+        
         /// <summary>
         /// The unique identifier of the user making the request
         /// </summary>

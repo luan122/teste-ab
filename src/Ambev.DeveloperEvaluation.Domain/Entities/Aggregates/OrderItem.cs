@@ -13,6 +13,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities.Aggregates
         public Guid ProductId { get; set; } = Guid.Empty!;
         public int Quantity { get; set; }
         public string? Description { get; set; }
+        public bool IsCanceled { get; set; }
         public virtual Order? Order { get; set; }
         public virtual Product? Product { get; set; }
         public decimal GetTotalPrice()
@@ -35,6 +36,10 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities.Aggregates
                 { Quantity: >= 10 and <= 20 } => Product.Price * 0.2m,
                 _ => 0
             };
+        }
+        public void Cancel()
+        {
+            IsCanceled = true;
         }
     }
 }
