@@ -19,14 +19,18 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities.Aggregates
         public decimal GetTotalPrice()
         {
             return Product == default ?
-                0
-                : Product.Price * Quantity;
+                0 : 
+                IsCanceled ? 
+                    0 :
+                    Product.Price * Quantity;
         }
         public decimal GetITotalPriceWithDiscount()
         {
             return Product == default ?
-                0
-                : (Product.Price - GetDiscountedPrice()) * Quantity;
+                0 :
+                IsCanceled ? 
+                    0 :
+                    (Product.Price - GetDiscountedPrice()) * Quantity;
         }
         public decimal GetDiscountedPrice()
         {
