@@ -41,6 +41,11 @@
         public virtual List<GetOrderItemResponse> Items { get; set; } = []!;
 
         /// <summary>
+        /// The date when the order was created
+        /// </summary>
+        public DateOnly CreatedAt { get; set; }
+
+        /// <summary>
         /// Flag to indicate if the order has been canceled
         /// </summary>
         public bool IsCanceled { get; set; }

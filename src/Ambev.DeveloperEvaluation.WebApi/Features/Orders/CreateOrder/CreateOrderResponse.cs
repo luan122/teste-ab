@@ -39,5 +39,10 @@
         /// The list of items in the order
         /// </summary>
         public virtual List<CreateOrderItemResponse> Items { get; set; } = []!;
+
+        /// <summary>
+        /// The date when the order was created
+        /// </summary>
+        public DateOnly CreatedAt { get; set; }
     }
 }

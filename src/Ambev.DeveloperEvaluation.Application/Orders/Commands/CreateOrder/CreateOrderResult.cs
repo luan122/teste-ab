@@ -22,4 +22,5 @@ public class CreateOrderResult
     public decimal TotalOrderPrice { get; set; }
     public decimal TotalOrderPriceWithDiscount { get; set; }
     public virtual List<CreateOrderItemResult> Items { get; set; } = []!;
+    public DateOnly CreatedAt { get; set; }
 }

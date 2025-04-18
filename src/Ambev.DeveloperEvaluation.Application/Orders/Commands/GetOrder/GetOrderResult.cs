@@ -18,4 +18,5 @@ public class GetOrderResult
     public decimal TotalOrderPrice { get; set; }
     public decimal TotalOrderPriceWithDiscount { get; set; }
     public virtual List<GetOrderItemResult> Items { get; set; } = []!;
+    public DateOnly CreatedAt { get; set; }
 }

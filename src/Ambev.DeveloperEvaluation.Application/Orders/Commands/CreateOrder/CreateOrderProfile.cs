@@ -22,7 +22,9 @@ public class CreateOrderProfile : Profile
 
         CreateMap<Order, CreateOrderResult>()
             .ForMember(dest => dest.TotalOrderPrice, opt => opt.MapFrom(src => src.GetOrderTotalPrice()))
-            .ForMember(dest => dest.TotalOrderPriceWithDiscount, opt => opt.MapFrom(src => src.GetOrderTotalPriceWithDiscount()));
+            .ForMember(dest => dest.TotalOrderPriceWithDiscount, opt => opt.MapFrom(src => src.GetOrderTotalPriceWithDiscount()))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreatedAt)));
+
         CreateMap<Order, CreateOrderNotification>()
             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id));
 

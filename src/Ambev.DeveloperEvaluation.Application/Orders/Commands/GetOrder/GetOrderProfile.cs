@@ -19,10 +19,14 @@ public class GetOrderProfile : Profile
 
         CreateMap<Order, GetOrderResult>()
             .ForMember(dest => dest.TotalOrderPrice, opt => opt.MapFrom(src => src.GetOrderTotalPrice()))
-            .ForMember(dest => dest.TotalOrderPriceWithDiscount, opt => opt.MapFrom(src => src.GetOrderTotalPriceWithDiscount()));
+            .ForMember(dest => dest.TotalOrderPriceWithDiscount, opt => opt.MapFrom(src => src.GetOrderTotalPriceWithDiscount()))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreatedAt)));
+
         CreateMap<User, GetOrderUserResult>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Username));
+
         CreateMap<Branch, GetOrderBranchResult>();
+
         CreateMap<OrderItem, GetOrderItemResult>()
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Title))
             .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Product.Price))
