@@ -5,11 +5,11 @@ using System.Text.Json;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Middleware
 {
-    public class ValidationExceptionMiddleware
+    public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public ValidationExceptionMiddleware(RequestDelegate next)
+        public ExceptionMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -20,12 +20,34 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
             {
                 await _next(context);
             }
-            catch (ValidationException ex)
+            catch (Exception ex)
             {
-                await HandleValidationExceptionAsync(context, ex);
+                if (ex is ValidationException validationException)
+                    await HandleValidationExceptionAsync(context, validationException);
+                else
+                    await HandleExceptionAsync(context, ex);
             }
         }
 
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+            var response = new ApiResponse<string>
+            {
+                Success = false,
+                Message = "Request failed",
+                Errors = $"Code-0x{exception.HResult:X8}: {exception.Message}"
+            };
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            return context.Response.WriteAsync(JsonSerializer.Serialize(response, jsonOptions));
+        }
         private static Task HandleValidationExceptionAsync(HttpContext context, ValidationException exception)
         {
             context.Response.ContentType = "application/json";

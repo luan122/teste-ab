@@ -52,10 +52,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateOrderRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<CreateOrderCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
@@ -90,10 +87,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders
                 return BadRequest("Invalid ID format. Must be a valid Guid or Int");
 
             var validator = new GetOrderRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
             var command = _mapper.Map<GetOrderCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
             var dataResponse = _mapper.Map<GetOrderResponse>(response);
@@ -131,9 +126,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders
                 return BadRequest("Invalid ID format. Must be a valid Guid or Int");
 
             var validator = new CancelOrderRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<CancelOrderCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
@@ -180,9 +173,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Orders
                 return BadRequest("Invalid OrderID format. Must be a valid Guid or Int");
 
             var validator = new CancelOrderItemRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<CancelOrderItemCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
