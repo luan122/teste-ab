@@ -16,6 +16,7 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProduct;
 using Ambev.DeveloperEvaluation.Application.Products.ListProduct;
 using Ambev.DeveloperEvaluation.WebApi.Features.Products.ListProduct;
 using Microsoft.AspNetCore.Authorization;
+using FluentValidation;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
 {
@@ -53,10 +54,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
         public async Task<IActionResult> CreateProduct([FromForm]CreateProductRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateProductRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<CreateProductCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
@@ -82,10 +80,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
         public async Task<IActionResult> PutProduct([FromRoute] Guid id, [FromForm] UpdateProductRequest request, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateProductRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<UpdateProductCommand>(request, opt => opt.AfterMap((src, dest) => dest.Id = id));
             var response = await _mediator.Send(command, cancellationToken);
@@ -107,19 +102,12 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
         {
             var request = new DeleteProductRequest { Id = id };
             var validator = new DeleteProductRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<DeleteProductCommand>(request.Id);
             await _mediator.Send(command, cancellationToken);
 
-            return Ok(new ApiResponse
-            {
-                Success = true,
-                Message = "Product deleted successfully"
-            });
+            return Ok("Product deleted successfully");
         }
 
 
@@ -136,9 +124,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products
         {
             var request = new GetProductRequest { Id = id };
             var validator = new GetProductRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
+
             var command = _mapper.Map<GetProductCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
             var dataResponse = _mapper.Map<GetProductResponse>(response);

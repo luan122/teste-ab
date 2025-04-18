@@ -18,6 +18,9 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.Property(o => o.Quantity)
                 .IsRequired();
 
+            builder.Property(o => o.IsCanceled)
+                .HasDefaultValue(false);
+
             builder.HasOne(o => o.Product)
                 .WithMany()
                 .HasForeignKey(o => o.ProductId)

@@ -16,6 +16,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
 {
@@ -69,9 +70,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
         {
             var request = new GetCategoryRequest { Id = id };
             var validator = new GetCategoryRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
+
             var command = _mapper.Map<GetCategoryCommand>(id);
             var response = await _mediator.Send(command, cancellationToken);
             return Ok(_mapper.Map<GetCategoryResponse>(response), "Category retrieved successfully");
@@ -89,10 +89,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
         public async Task<IActionResult> CreateCategory(CreateCategoryRequest request, CancellationToken cancellationToken = default)
         {
             var validator = new CreateCategoryRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<CreateCategoryCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
@@ -117,10 +114,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
         public async Task<IActionResult> PutCategory([FromRoute] Guid id, [FromBody]UpdateCategoryRequest request, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateCategoryRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<UpdateCategoryCommand>(request, opt => opt.AfterMap((src, dest) => dest.Id = id));
             var response = await _mediator.Send(command, cancellationToken);
@@ -141,19 +135,12 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categories
         {
             var request = new DeleteCategoryRequest { Id = id };
             var validator = new DeleteCategoryRequestValidator();
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
+            await validator.ValidateAndThrowAsync(request, cancellationToken);
 
             var command = _mapper.Map<DeleteCategoryCommand>(request.Id);
             await _mediator.Send(command, cancellationToken);
 
-            return Ok(new ApiResponse
-            {
-                Success = true,
-                Message = "Category deleted successfully"
-            });
+            return Ok("Category deleted successfully");
         }
     }
 }

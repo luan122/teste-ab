@@ -39,5 +39,10 @@
         /// Optional description or notes for the order item
         /// </summary>
         public string? Description { get; set; }
+
+        /// <summary>
+        /// Flag to indicate if the order item has been canceled
+        /// </summary>
+        public bool IsCanceled { get; set; }
     }
 }

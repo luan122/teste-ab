@@ -50,14 +50,13 @@ public class GetOrderHandler : IRequestHandler<GetOrderCommand, GetOrderResult>
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
-
         var query = _orderRepository.Database
             .AsNoTracking()
             .Include(o => o.Customer)
             .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
             .Include(o => o.Branch);
-        var order = new Order();
+        Order? order = null;
 
         if(command.Id != Guid.Empty)
             order = await query.FirstOrDefaultAsync(o => o.Id == command.Id, cancellationToken);

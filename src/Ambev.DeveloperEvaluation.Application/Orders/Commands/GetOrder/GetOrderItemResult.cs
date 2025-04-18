@@ -15,5 +15,6 @@ namespace Ambev.DeveloperEvaluation.Application.Orders.Commands.GetOrder
         public decimal TotalPrice { get; set; }
         public decimal TotalPriceWithDiscount { get; set; }
         public string? Description { get; set; }
+        public bool IsCanceled { get; set; }
     }
 }
